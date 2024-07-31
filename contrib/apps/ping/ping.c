@@ -205,7 +205,7 @@ ping_recv(int s)
 
       LWIP_DEBUGF( PING_DEBUG, ("ping: recv "));
       ip_addr_debug_print_val(PING_DEBUG, fromaddr);
-      LWIP_DEBUGF( PING_DEBUG, (" %"U32_F" ms\n", (sys_now() - ping_time)));
+      LWIP_DEBUGF( PING_DEBUG, (" %" U32_F " ms\n", (sys_now() - ping_time)));
 
       /* todo: support ICMP6 echo */
 #if LWIP_IPV4
@@ -229,7 +229,7 @@ ping_recv(int s)
   }
 
   if (len == 0) {
-    LWIP_DEBUGF( PING_DEBUG, ("ping: recv - %"U32_F" ms - timeout\n", (sys_now()-ping_time)));
+    LWIP_DEBUGF( PING_DEBUG, ("ping: recv - %" U32_F " ms - timeout\n", (sys_now()-ping_time)));
   }
 
   /* do some ping result processing */
@@ -308,7 +308,7 @@ ping_recv(void *arg, struct raw_pcb *pcb, struct pbuf *p, const ip_addr_t *addr)
     if ((iecho->id == PING_ID) && (iecho->seqno == lwip_htons(ping_seq_num))) {
       LWIP_DEBUGF( PING_DEBUG, ("ping: recv "));
       ip_addr_debug_print(PING_DEBUG, addr);
-      LWIP_DEBUGF( PING_DEBUG, (" %"U32_F" ms\n", (sys_now()-ping_time)));
+      LWIP_DEBUGF( PING_DEBUG, (" %" U32_F " ms\n", (sys_now()-ping_time)));
 
       /* do some ping result processing */
       PING_RESULT(1);

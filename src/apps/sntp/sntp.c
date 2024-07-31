@@ -372,7 +372,7 @@ sntp_retry(void *arg)
 {
   LWIP_UNUSED_ARG(arg);
 
-  LWIP_DEBUGF(SNTP_DEBUG_STATE, ("sntp_retry: Next request will be sent in %"U32_F" ms\n",
+  LWIP_DEBUGF(SNTP_DEBUG_STATE, ("sntp_retry: Next request will be sent in %" U32_F " ms\n",
                                  sntp_retry_timeout));
 
   /* set up a timer to send a retry and increase the retry delay */
@@ -425,7 +425,7 @@ sntp_try_next_server(void *arg)
         || (sntp_servers[sntp_current_server].name != NULL)
 #endif
        ) {
-      LWIP_DEBUGF(SNTP_DEBUG_STATE, ("sntp_try_next_server: Sending request to server %"U16_F"\n",
+      LWIP_DEBUGF(SNTP_DEBUG_STATE, ("sntp_try_next_server: Sending request to server %" U16_F "\n",
                                      (u16_t)sntp_current_server));
       /* new server: reset retry timeout */
       SNTP_RESET_RETRY_TIMEOUT();
@@ -503,12 +503,12 @@ sntp_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr,
           }
         }
       } else {
-        LWIP_DEBUGF(SNTP_DEBUG_WARN, ("sntp_recv: Invalid mode in response: %"U16_F"\n", (u16_t)mode));
+        LWIP_DEBUGF(SNTP_DEBUG_WARN, ("sntp_recv: Invalid mode in response: %" U16_F "\n", (u16_t)mode));
         /* wait for correct response */
         err = ERR_TIMEOUT;
       }
     } else {
-      LWIP_DEBUGF(SNTP_DEBUG_WARN, ("sntp_recv: Invalid packet length: %"U16_F"\n", p->tot_len));
+      LWIP_DEBUGF(SNTP_DEBUG_WARN, ("sntp_recv: Invalid packet length: %" U16_F "\n", p->tot_len));
     }
   }
 #if SNTP_CHECK_RESPONSE >= 1
@@ -539,7 +539,7 @@ sntp_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr,
 
       sntp_update_delay = (u32_t)SNTP_UPDATE_DELAY;
       sys_timeout(sntp_update_delay, sntp_request, NULL);
-      LWIP_DEBUGF(SNTP_DEBUG_STATE, ("sntp_recv: Scheduled next time request: %"U32_F" ms\n",
+      LWIP_DEBUGF(SNTP_DEBUG_STATE, ("sntp_recv: Scheduled next time request: %" U32_F " ms\n",
                                      sntp_update_delay));
     }
   } else if (err == SNTP_ERR_KOD) {
@@ -586,7 +586,7 @@ sntp_send_request(const ip_addr_t *server_addr)
     ip_addr_copy(sntp_last_server_address, *server_addr);
 #endif /* SNTP_CHECK_RESPONSE >= 1 */
   } else {
-    LWIP_DEBUGF(SNTP_DEBUG_SERIOUS, ("sntp_send_request: Out of memory, trying again in %"U32_F" ms\n",
+    LWIP_DEBUGF(SNTP_DEBUG_SERIOUS, ("sntp_send_request: Out of memory, trying again in %" U32_F " ms\n",
                                      (u32_t)SNTP_RETRY_TIMEOUT));
     /* out of memory: set up a timer to send a retry */
     sys_untimeout(sntp_request, NULL);

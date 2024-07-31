@@ -304,9 +304,9 @@ pppos_netif_output(ppp_pcb *ppp, void *ctx, struct pbuf *pb, u16_t protocol)
 
   err = pppos_output_last(pppos, err, nb, &fcs_out);
   if (err == ERR_OK) {
-    PPPDEBUG(LOG_INFO, ("pppos_netif_output[%d]: proto=0x%"X16_F", len = %d\n", ppp->netif->num, protocol, pb->tot_len));
+    PPPDEBUG(LOG_INFO, ("pppos_netif_output[%d]: proto=0x%" X16_F ", len = %d\n", ppp->netif->num, protocol, pb->tot_len));
   } else {
-    PPPDEBUG(LOG_WARNING, ("pppos_netif_output[%d]: output failed proto=0x%"X16_F", len = %d\n", ppp->netif->num, protocol, pb->tot_len));
+    PPPDEBUG(LOG_WARNING, ("pppos_netif_output[%d]: output failed proto=0x%" X16_F ", len = %d\n", ppp->netif->num, protocol, pb->tot_len));
   }
   return err;
 }
@@ -531,7 +531,7 @@ pppos_input(ppp_pcb *ppp, const void *s, int l)
         /* If the fcs is invalid, drop the packet. */
         } else if (pppos->in_fcs != PPP_GOODFCS) {
           PPPDEBUG(LOG_INFO,
-                   ("pppos_input[%d]: Dropping bad fcs 0x%"X16_F" proto=0x%"X16_F"\n",
+                   ("pppos_input[%d]: Dropping bad fcs 0x%" X16_F " proto=0x%" X16_F "\n",
                     ppp->netif->num, pppos->in_fcs, pppos->in_protocol));
           /* Note: If you get lots of these, check for UART frame errors or try different baud rate */
           LINK_STATS_INC(link.chkerr);

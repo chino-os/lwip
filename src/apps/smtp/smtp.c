@@ -1417,7 +1417,7 @@ smtp_process(void *arg, struct altcp_pcb *pcb, struct pbuf *p)
     if (altcp_write(pcb, s->tx_buf, tx_buf_len, TCP_WRITE_FLAG_COPY) == ERR_OK) {
       LWIP_DEBUGF(SMTP_DEBUG_TRACE, ("smtp_process[%s]: received command %d (%s)\n",
         smtp_state_str[s->state], response_code, smtp_pbuf_str(s->p)));
-      LWIP_DEBUGF(SMTP_DEBUG_TRACE, ("smtp_process[%s]: sent %"U16_F" bytes: \"%s\"\n",
+      LWIP_DEBUGF(SMTP_DEBUG_TRACE, ("smtp_process[%s]: sent %" U16_F " bytes: \"%s\"\n",
         smtp_state_str[s->state], tx_buf_len, s->tx_buf));
       s->timer = SMTP_TIMEOUT;
       pbuf_free(s->p);

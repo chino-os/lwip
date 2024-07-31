@@ -185,7 +185,7 @@ acd_start(struct netif *netif, struct acd *acd, ip4_addr_t ipaddr)
 
   LWIP_UNUSED_ARG(netif);
   LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-              ("acd_start(netif=%p) %c%c%"U16_F"\n",
+              ("acd_start(netif=%p) %c%c%" U16_F "\n",
               (void *)netif, netif->name[0],
                netif->name[1], (u16_t)netif->num));
 
@@ -249,7 +249,7 @@ acd_tmr(void)
       }
 
       LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE,
-                  ("acd_tmr() ACD-State: %"U16_F", ttw=%"U16_F"\n",
+                  ("acd_tmr() ACD-State: %" U16_F ", ttw=%" U16_F "\n",
                    (u16_t)(acd->state), acd->ttw));
 
       if (acd->ttw > 0) {
@@ -290,7 +290,7 @@ acd_tmr(void)
               acd->num_conflicts = 0;
 
               LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-                    ("acd_tmr(): changing state to ANNOUNCING: %"U16_F".%"U16_F".%"U16_F".%"U16_F"\n",
+                    ("acd_tmr(): changing state to ANNOUNCING: %" U16_F ".%" U16_F ".%" U16_F ".%" U16_F "\n",
                      ip4_addr1_16(&acd->ipaddr), ip4_addr2_16(&acd->ipaddr),
                      ip4_addr3_16(&acd->ipaddr), ip4_addr4_16(&acd->ipaddr)));
             }
@@ -306,7 +306,7 @@ acd_tmr(void)
               acd->sent_num = 0;
               acd->ttw = 0;
               LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-                    ("acd_tmr(): changing state to ONGOING: %"U16_F".%"U16_F".%"U16_F".%"U16_F"\n",
+                    ("acd_tmr(): changing state to ONGOING: %" U16_F ".%" U16_F ".%" U16_F ".%" U16_F "\n",
                      ip4_addr1_16(&acd->ipaddr), ip4_addr2_16(&acd->ipaddr),
                      ip4_addr3_16(&acd->ipaddr), ip4_addr4_16(&acd->ipaddr)));
 

@@ -43,7 +43,6 @@ set(LWIP_COMPILER_FLAGS_GNU_CLANG
     $<$<CONFIG:Debug>:-g>
     $<$<CONFIG:Release>:-O3>
     -Wall
-    -pedantic
     -Werror
     -Wparentheses
     -Wsequence-point
@@ -63,6 +62,24 @@ set(LWIP_COMPILER_FLAGS_GNU_CLANG
     -Wmissing-prototypes
     -Waggregate-return
     -Wlogical-not-parentheses
+    -Wno-reserved-macro-identifier
+    -Wno-gnu-include-next
+    -Wno-c++98-compat
+    -Wno-reserved-identifier
+    -Wno-c++98-compat-pedantic
+    -Wno-gcc-compat
+    -Wno-old-style-cast
+    -Wno-zero-as-null-pointer-constant
+    -Wno-unsafe-buffer-usage
+    -Wno-unused-macros
+    -Wno-switch-enum
+    -Wno-covered-switch-default
+    -Wno-missing-noreturn
+    -Wno-extra-semi-stmt
+    -Wno-missing-variable-declarations
+    -Wno-sign-compare
+    -Wno-disabled-macro-expansion
+    -Wno-sign-conversion
 )
 
 if (NOT LWIP_HAVE_MBEDTLS)
@@ -104,6 +121,7 @@ if(CMAKE_C_COMPILER_ID STREQUAL "Clang")
     list(APPEND LWIP_COMPILER_FLAGS_GNU_CLANG
         -Wdocumentation
         -Wno-documentation-deprecated-sync
+        -Wno-documentation-unknown-command
     )
 
     if(LWIP_USE_SANITIZERS)

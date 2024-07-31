@@ -227,6 +227,7 @@ set(lwipmbedtls_SRCS
     ${LWIP_DIR}/src/apps/altcp_tls/altcp_tls_mbedtls_mem.c
     ${LWIP_DIR}/src/apps/snmp/snmpv3_mbedtls.c
 )
+set_source_files_properties(${lwipmbedtls_SRCS} PROPERTIES LANGUAGE CXX)
 
 # All LWIP files without apps
 set(lwipnoapps_SRCS
@@ -238,6 +239,7 @@ set(lwipnoapps_SRCS
     ${lwipsixlowpan_SRCS}
     ${lwipppp_SRCS}
 )
+set_source_files_properties(${lwipnoapps_SRCS} PROPERTIES LANGUAGE CXX)
 
 # LWIPAPPFILES: All LWIP APPs
 set(lwipallapps_SRCS
@@ -251,6 +253,7 @@ set(lwipallapps_SRCS
     ${lwiptftp_SRCS}
     ${lwipmqtt_SRCS}
 )
+set_source_files_properties(${lwipallapps_SRCS} PROPERTIES LANGUAGE CXX)
 
 # Generate lwip/init.h (version info)
 configure_file(${LWIP_DIR}/src/include/lwip/init.h.cmake.in ${LWIP_DIR}/src/include/lwip/init.h)

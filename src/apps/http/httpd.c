@@ -507,7 +507,7 @@ http_state_eof(struct http_state *hs)
 #if LWIP_HTTPD_TIMING
     u32_t ms_needed = sys_now() - hs->time_started;
     u32_t needed = LWIP_MAX(1, (ms_needed / 100));
-    LWIP_DEBUGF(HTTPD_DEBUG_TIMING, ("httpd: needed %"U32_F" ms to send file of %d bytes -> %"U32_F" bytes/sec\n",
+    LWIP_DEBUGF(HTTPD_DEBUG_TIMING, ("httpd: needed %" U32_F " ms to send file of %d bytes -> %" U32_F " bytes/sec\n",
                                      ms_needed, hs->handle->len, ((((u32_t)hs->handle->len) * 10) / needed)));
 #endif /* LWIP_HTTPD_TIMING */
     fs_close(hs->handle);
@@ -1690,7 +1690,7 @@ http_find_error_file(struct http_state *hs, u16_t error_nr)
   } else if (fs_open(&hs->file_handle, uri3) == ERR_OK) {
     uri = uri3;
   } else {
-    LWIP_DEBUGF(HTTPD_DEBUG, ("Error page for error %"U16_F" not found\n",
+    LWIP_DEBUGF(HTTPD_DEBUG, ("Error page for error %" U16_F " not found\n",
                               error_nr));
     return ERR_ARG;
   }
@@ -2013,7 +2013,7 @@ http_parse_request(struct pbuf *inp, struct http_state *hs, struct altcp_pcb *pc
 
 #if LWIP_HTTPD_SUPPORT_REQUESTLIST
 
-  LWIP_DEBUGF(HTTPD_DEBUG, ("Received %"U16_F" bytes\n", p->tot_len));
+  LWIP_DEBUGF(HTTPD_DEBUG, ("Received %" U16_F " bytes\n", p->tot_len));
 
   /* first check allowed characters in this pbuf? */
 
@@ -2616,7 +2616,7 @@ http_recv(void *arg, struct altcp_pcb *pcb, struct pbuf *p, err_t err)
         if (hs->post_content_len_left == 0)
 #endif /* LWIP_HTTPD_SUPPORT_POST */
         {
-          LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_recv: data %p len %"S32_F"\n", (const void *)hs->file, hs->left));
+          LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_recv: data %p len %" S32_F "\n", (const void *)hs->file, hs->left));
           http_send(pcb, hs);
         }
       } else if (parsed == ERR_ARG) {
