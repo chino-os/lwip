@@ -80,6 +80,17 @@ set(LWIP_COMPILER_FLAGS_GNU_CLANG
     -Wno-sign-compare
     -Wno-disabled-macro-expansion
     -Wno-sign-conversion
+    -Wno-deprecated-redundant-constexpr-static-def
+    -Wno-c++20-compat
+    -Wno-implicit-float-conversion
+    -Wno-double-promotion
+    -Wno-float-equal
+    -Wno-gnu-anonymous-struct
+    -Wno-zero-length-array
+    -Wno-implicit-int-conversion
+    -Wno-shorten-64-to-32
+    -Wno-extra-semi
+    -Wno-cast-align
 )
 
 if (NOT LWIP_HAVE_MBEDTLS)
@@ -119,7 +130,8 @@ endif()
 
 if(CMAKE_C_COMPILER_ID STREQUAL "Clang")
     list(APPEND LWIP_COMPILER_FLAGS_GNU_CLANG
-        -Wdocumentation
+        #-Wdocumentation
+        -Wno-documentation
         -Wno-documentation-deprecated-sync
         -Wno-documentation-unknown-command
     )

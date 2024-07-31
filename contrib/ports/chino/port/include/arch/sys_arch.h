@@ -3,33 +3,51 @@
 #ifndef LWIP_ARCH_SYS_ARCH_H
 #define LWIP_ARCH_SYS_ARCH_H
 
+extern "C++" {
+#include <chino/os/processapi.h>
+#include "../../../../os/kernel/ps/task/thread.h"
+}
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define SYS_MBOX_NULL NULL
-#define SYS_SEM_NULL  NULL
+#define SYS_INVALID (uint32_t) - 1
+#define SYS_MBOX_SIZE 128
 
 /*typedef u32_t sys_prot_t;*/
 
-struct sys_sem;
-typedef struct sys_sem * sys_sem_t;
-#define sys_sem_valid(sem)             (((sem) != NULL) && (*(sem) != NULL))
-#define sys_sem_valid_val(sem)         ((sem) != NULL)
-#define sys_sem_set_invalid(sem)       do { if((sem) != NULL) { *(sem) = NULL; }}while(0)
-#define sys_sem_set_invalid_val(sem)   do { (sem) = NULL; }while(0)
+typedef union sys_sem {
+    constexpr sys_sem() noexcept : invalid(SYS_INVALID) {}
+    uint32_t invalid;
+    chino::os::event event;
+} sys_sem_t;
+#define sys_sem_valid(sem)             ((sem)->invalid != SYS_INVALID)
+#define sys_sem_valid_val(sem)         ((sem).invalid != SYS_INVALID)
+#define sys_sem_set_invalid(sem)       ((sem)->invalid = SYS_INVALID)
+#define sys_sem_set_invalid_val(sem)   ((sem).invalid = SYS_INVALID)
 
-struct sys_mutex;
-typedef struct sys_mutex * sys_mutex_t;
-#define sys_mutex_valid(mutex)         sys_sem_valid(mutex)
-#define sys_mutex_set_invalid(mutex)   sys_sem_set_invalid(mutex)
+typedef union sys_mutex {
+    constexpr sys_mutex() noexcept : invalid(SYS_INVALID) {}
+    uint32_t invalid;
+    chino::os::mutex mutex;
+} sys_mutex_t;
+#define sys_mutex_valid(mutex)         ((mutex)->invalid != SYS_INVALID)
+#define sys_mutex_set_invalid(mutex)   ((mutex)->invalid = SYS_INVALID)
 
-struct sys_mbox;
-typedef struct sys_mbox * sys_mbox_t;
-#define sys_mbox_valid(mbox)           sys_sem_valid(mbox)
-#define sys_mbox_valid_val(mbox)       sys_sem_valid_val(mbox)
-#define sys_mbox_set_invalid(mbox)     sys_sem_set_invalid(mbox)
-#define sys_mbox_set_invalid_val(mbox) sys_sem_set_invalid_val(mbox)
+typedef struct sys_mbox {
+    constexpr sys_mbox() noexcept : first(0), last(0), msgs{}, wait_send(0) {}
+    int first, last;
+    void *msgs[SYS_MBOX_SIZE];
+    sys_sem_t not_empty;
+    sys_sem_t not_full;
+    sys_mutex_t mutex;
+    int wait_send;
+} sys_mbox_t;
+#define sys_mbox_valid(mbox)           ((mbox)->first != SYS_INVALID)
+#define sys_mbox_valid_val(mbox)       ((mbox).first != SYS_INVALID)
+#define sys_mbox_set_invalid(mbox)     ((mbox)->first = SYS_INVALID)
+#define sys_mbox_set_invalid_val(mbox) ((mbox).first = SYS_INVALID)
 
 struct sys_thread;
 typedef struct sys_thread * sys_thread_t;
