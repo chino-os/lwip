@@ -1843,7 +1843,7 @@
  * sys_thread_new() when the thread is created.
  */
 #if !defined TCPIP_THREAD_STACKSIZE || defined __DOXYGEN__
-#define TCPIP_THREAD_STACKSIZE          0
+#define TCPIP_THREAD_STACKSIZE          (sizeof(uintptr_t) * 256)
 #endif
 
 /**

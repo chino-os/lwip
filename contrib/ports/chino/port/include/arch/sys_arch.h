@@ -13,7 +13,7 @@ extern "C" {
 #endif
 
 #define SYS_INVALID (uint32_t) - 1
-#define SYS_MBOX_SIZE 128
+#define SYS_MBOX_SIZE 8
 
 /*typedef u32_t sys_prot_t;*/
 
@@ -60,9 +60,6 @@ void sys_arch_netconn_sem_free(void);
 #define LWIP_NETCONN_THREAD_SEM_ALLOC() sys_arch_netconn_sem_alloc()
 #define LWIP_NETCONN_THREAD_SEM_FREE()  sys_arch_netconn_sem_free()
 #endif /* #if LWIP_NETCONN_SEM_PER_THREAD */
-
-#define LWIP_EXAMPLE_APP_ABORT() lwip_unix_keypressed()
-int lwip_unix_keypressed(void);
 
 /*
    ---------------------------------------

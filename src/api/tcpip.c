@@ -59,6 +59,8 @@
 static tcpip_init_done_fn tcpip_init_done;
 static void *tcpip_init_done_arg;
 static sys_mbox_t tcpip_mbox;
+static chino::os::lazy_construct<chino::os::kernel::ps::thread> tcpip_sys_thread;
+static uintptr_t tcpip_stack[TCPIP_THREAD_STACKSIZE / sizeof(uintptr_t)];
 
 #if LWIP_TCPIP_CORE_LOCKING
 /** The global semaphore to lock the stack. */
@@ -132,7 +134,7 @@ again:
  *
  * @param arg unused argument
  */
-static void
+static int
 tcpip_thread(void *arg)
 {
   struct tcpip_msg *msg;
@@ -671,7 +673,7 @@ tcpip_init(tcpip_init_done_fn initfunc, void *arg)
   }
 #endif /* LWIP_TCPIP_CORE_LOCKING */
 
-  sys_thread_new(TCPIP_THREAD_NAME, tcpip_thread, NULL, TCPIP_THREAD_STACKSIZE, TCPIP_THREAD_PRIO);
+  sys_thread_new(tcpip_sys_thread, tcpip_stack, TCPIP_THREAD_NAME, tcpip_thread, NULL, TCPIP_THREAD_PRIO);
 }
 
 /**

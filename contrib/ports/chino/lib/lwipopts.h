@@ -356,7 +356,7 @@
 /**
  * LWIP_SOCKET==1: Enable Socket API (require to use sockets.c)
  */
-#define LWIP_SOCKET                     1
+#define LWIP_SOCKET                     0
 
 /**
  * LWIP_COMPAT_SOCKETS==1: Enable BSD-style sockets functions names through defines.

@@ -1,8 +1,8 @@
 // Copyright (c) SunnyCase. All rights reserved.
 // Licensed under the Apache license. See LICENSE file in the project root for full license information.
-#include "lwip/debug.h"
-
 #include "../../../os/kernel/ps/task/thread.h"
+#include "lwip/debug.h"
+#include <chino/os/kernel/ke.h>
 #include <chino/os/processapi.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -33,13 +33,16 @@ static pthread_key_t sys_thread_sem_key;
 u32_t lwip_port_rand(void) { return (u32_t)rand(); }
 
 #if !NO_SYS
-
-sys_thread_t sys_thread_new(const char *name, lwip_thread_fn function, void *arg, int stacksize, int prio) {
+void sys_thread_new(chino::os::lazy_construct<chino::os::kernel::ps::thread> &sys_thread, std::span<uintptr_t> stack,
+                    const char *name, lwip_thread_fn thread, void *arg, int prio) {
     LWIP_UNUSED_ARG(name);
-    LWIP_UNUSED_ARG(stacksize);
     LWIP_UNUSED_ARG(prio);
-    while (1) {
-    }
+    sys_thread.construct(chino::os::kernel::ps::thread_create_options{
+        .process = &kernel::ke_process(),
+        .not_owned_stack = true,
+        .stack = {reinterpret_cast<uintptr_t *>(stack.data()), stack.size_bytes() / sizeof(uintptr_t)},
+        .entry_point = (thread_start_t)thread,
+        .entry_arg = arg});
 }
 
 #if LWIP_TCPIP_CORE_LOCKING
@@ -77,6 +80,9 @@ void sys_check_core_locking(void) {
 err_t sys_mbox_new(sys_mbox_t *mb, int size) {
     LWIP_UNUSED_ARG(size);
     mb->first = mb->last = 0;
+    sys_sem_new(&mb->not_empty, 0);
+    sys_sem_new(&mb->not_full, 0);
+    sys_mutex_new(&mb->mutex);
     mb->wait_send = 0;
 
     SYS_STATS_INC_USED(mbox);
@@ -86,6 +92,9 @@ err_t sys_mbox_new(sys_mbox_t *mb, int size) {
 void sys_mbox_free(sys_mbox_t *mb) {
     if (mb != NULL) {
         SYS_STATS_DEC(mbox.used);
+        sys_sem_free(&mb->not_empty);
+        sys_sem_free(&mb->not_full);
+        sys_mutex_free(&mb->mutex);
     }
 }
 
@@ -239,7 +248,6 @@ err_t sys_sem_new(sys_sem_t *sem, u8_t count) {
 }
 
 u32_t sys_arch_sem_wait(sys_sem_t *sem, u32_t timeout) {
-    u32_t time_needed = 0;
     LWIP_ASSERT("invalid sem", (sem != NULL) && sys_sem_valid(sem));
     return sem->event.wait(timeout ? std::make_optional(std::chrono::milliseconds(timeout)) : std::nullopt).is_ok()
                ? 0
@@ -270,18 +278,15 @@ err_t sys_mutex_new(sys_mutex *mtx) {
 
 /** Lock a mutex
  * @param mutex the mutex to lock */
-void sys_mutex_lock(sys_mutex *mtx) { mtx->mutex.lock(); }
+void sys_mutex_lock(sys_mutex *mtx) { (void)mtx->mutex.lock(); }
 
 /** Unlock a mutex
  * @param mutex the mutex to unlock */
-void sys_mutex_unlock(struct sys_mutex **mutex) { pthread_mutex_unlock(&((*mutex)->mutex)); }
+void sys_mutex_unlock(sys_mutex *mtx) { mtx->mutex.unlock(); }
 
 /** Delete a mutex
  * @param mutex the mutex to delete */
-void sys_mutex_free(struct sys_mutex **mutex) {
-    pthread_mutex_destroy(&((*mutex)->mutex));
-    free(*mutex);
-}
+void sys_mutex_free(sys_mutex *mtx) { std::destroy_at(&mtx->mutex); }
 
 #endif /* !NO_SYS */
 
@@ -339,21 +344,20 @@ void sys_arch_netconn_sem_free(void) {
 /*-----------------------------------------------------------------------------------*/
 /* Time */
 u32_t sys_now(void) {
-    struct timespec ts;
+    struct timespec ts {};
     u32_t now;
 
-    get_monotonic_time(&ts);
     now = (u32_t)(ts.tv_sec * 1000L + ts.tv_nsec / 1000000L);
 #ifdef LWIP_FUZZ_SYS_NOW
     now += sys_now_offset;
 #endif
+    LWIP_DEBUGF(SYS_DEBUG, ("Not impl"));
     return now;
 }
 
 u32_t sys_jiffies(void) {
-    struct timespec ts;
-
-    get_monotonic_time(&ts);
+    struct timespec ts {};
+    LWIP_DEBUGF(SYS_DEBUG, ("Not impl"));
     return (u32_t)(ts.tv_sec * 1000000000L + ts.tv_nsec);
 }
 
@@ -417,14 +421,3 @@ void sys_arch_unprotect(sys_prot_t pval) {
     }
 }
 #endif /* SYS_LIGHTWEIGHT_PROT */
-
-#if !NO_SYS
-/* get keyboard state to terminate the debug app by using select */
-int lwip_unix_keypressed(void) {
-    struct timeval tv = {0L, 0L};
-    fd_set fds;
-    FD_ZERO(&fds);
-    FD_SET(0, &fds);
-    return select(1, &fds, NULL, NULL, &tv);
-}
-#endif /* !NO_SYS */
