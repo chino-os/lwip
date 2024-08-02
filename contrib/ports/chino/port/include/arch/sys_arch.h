@@ -4,8 +4,8 @@
 #define LWIP_ARCH_SYS_ARCH_H
 
 extern "C++" {
-#include <chino/os/processapi.h>
 #include "../../../../os/kernel/ps/task/thread.h"
+#include <chino/os/processapi.h>
 }
 
 #ifdef __cplusplus
@@ -20,7 +20,7 @@ extern "C" {
 typedef union sys_sem {
     constexpr sys_sem() noexcept : invalid(SYS_INVALID) {}
     uint32_t invalid;
-    chino::os::event event;
+    chino::os::auto_reset_event event;
 } sys_sem_t;
 #define sys_sem_valid(sem)             ((sem)->invalid != SYS_INVALID)
 #define sys_sem_valid_val(sem)         ((sem).invalid != SYS_INVALID)

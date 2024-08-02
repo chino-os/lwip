@@ -39,6 +39,7 @@ void sys_thread_new(chino::os::lazy_construct<chino::os::kernel::ps::thread> &sy
     LWIP_UNUSED_ARG(prio);
     sys_thread.construct(chino::os::kernel::ps::thread_create_options{
         .process = &kernel::ke_process(),
+        .priority = thread_priority::high,
         .not_owned_stack = true,
         .stack = {reinterpret_cast<uintptr_t *>(stack.data()), stack.size_bytes() / sizeof(uintptr_t)},
         .entry_point = (thread_start_t)thread,
@@ -256,7 +257,7 @@ u32_t sys_arch_sem_wait(sys_sem_t *sem, u32_t timeout) {
 
 void sys_sem_signal(sys_sem_t *sem) {
     LWIP_ASSERT("invalid sem", (sem != NULL) && sys_sem_valid(sem));
-    sem->event.notify_all();
+    sem->event.notify_one();
 }
 
 void sys_sem_free(sys_sem_t *sem) {
@@ -343,23 +344,7 @@ void sys_arch_netconn_sem_free(void) {
 
 /*-----------------------------------------------------------------------------------*/
 /* Time */
-u32_t sys_now(void) {
-    struct timespec ts {};
-    u32_t now;
-
-    now = (u32_t)(ts.tv_sec * 1000L + ts.tv_nsec / 1000000L);
-#ifdef LWIP_FUZZ_SYS_NOW
-    now += sys_now_offset;
-#endif
-    LWIP_DEBUGF(SYS_DEBUG, ("Not impl"));
-    return now;
-}
-
-u32_t sys_jiffies(void) {
-    struct timespec ts {};
-    LWIP_DEBUGF(SYS_DEBUG, ("Not impl"));
-    return (u32_t)(ts.tv_sec * 1000000000L + ts.tv_nsec);
-}
+u32_t sys_now(void) { return (u32_t)(hal::arch_t::current_cpu_time().count() / 1000000); }
 
 /*-----------------------------------------------------------------------------------*/
 /* Init */

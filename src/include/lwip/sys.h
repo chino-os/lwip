@@ -438,13 +438,6 @@ void sys_thread_new(chino::os::lazy_construct<chino::os::kernel::ps::thread> &sy
  */
 void sys_init(void);
 
-#ifndef sys_jiffies
-/**
- * Ticks/jiffies since power up.
- */
-u32_t sys_jiffies(void);
-#endif
-
 #ifdef LWIP_FUZZ_SYS_NOW
 /* This offset should be added to the time 'sys_now()' returns */
 extern u32_t sys_now_offset;

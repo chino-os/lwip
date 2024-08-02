@@ -54,6 +54,9 @@
 
 // IPv6 options
 #define LWIP_IPV6                       1
+#ifdef _WIN64
+#define IPV6_FRAG_COPYHEADER            1
+#endif
 
 // RAW options
 #define LWIP_RAW                        1
@@ -111,6 +114,7 @@
 
 // Threading options
 #define LWIP_TCPIP_CORE_LOCKING         1
+#define TCPIP_THREAD_STACKSIZE          (sizeof(uintptr_t) * 128 * 1024)
 
 void sys_check_core_locking(void);
 #define LWIP_ASSERT_CORE_LOCKED()  sys_check_core_locking()
