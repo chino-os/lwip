@@ -1249,8 +1249,8 @@ netif_loop_output_ipv6(struct netif *netif, struct pbuf *p, const ip6_addr_t *ad
  * netif_poll().
  */
 void
-netif_poll(struct netif *netif)
-{
+netif_poll(void *arg) {
+  struct netif *netif = (struct netif *)arg;
   /* If we have a loopif, SNMP counters are adjusted for it,
    * if not they are adjusted for 'netif'. */
 #if MIB2_STATS

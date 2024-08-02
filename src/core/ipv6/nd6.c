@@ -2156,7 +2156,7 @@ nd6_queue_packet(s8_t neighbor_index, struct pbuf *q)
         /* queue did not exist, first item in queue */
         neighbor_cache[neighbor_index].q = new_entry;
       }
-      LWIP_DEBUGF(LWIP_DBG_TRACE, ("ipv6: queued packet %p on neighbor entry %"S16_F"\n", (void *)p, (s16_t)neighbor_index));
+      LWIP_DEBUGF(LWIP_DBG_TRACE, ("ipv6: queued packet %p on neighbor entry %" S16_F"\n", (void *)p, (s16_t)neighbor_index));
       result = ERR_OK;
     } else {
       /* the pool MEMP_ND6_QUEUE is empty */
