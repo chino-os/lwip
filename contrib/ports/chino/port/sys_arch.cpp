@@ -1,6 +1,6 @@
 // Copyright (c) SunnyCase. All rights reserved.
 // Licensed under the Apache license. See LICENSE file in the project root for full license information.
-#include "../../../os/kernel/ps/task/thread.h"
+#include "../../../../../kernel/ps/task/thread.h"
 #include "lwip/debug.h"
 #include <chino/os/kernel/ke.h>
 #include <chino/os/processapi.h>

@@ -4,7 +4,7 @@
 #define LWIP_ARCH_SYS_ARCH_H
 
 extern "C++" {
-#include "../../../../os/kernel/ps/task/thread.h"
+#include "../../../../../kernel/ps/task/thread.h"
 #include <chino/os/processapi.h>
 }
 
